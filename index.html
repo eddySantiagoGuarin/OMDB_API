@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BOYS OMDb">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
   <!-- Icono para iOS -->
@@ -15,7 +20,13 @@
   <title>BOYS — Explorador OMDb</title>
   <style>
     /* ===== RESET Y BASE ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     /* ===== VARIABLES DE COLOR ===== */
     :root {
@@ -25,13 +36,15 @@
       --bg: #09090f;
       --bg2: #11111c;
       --bg3: #1a1a2a;
-      --border: rgba(255,255,255,0.08);
+      --border: rgba(255, 255, 255, 0.08);
       --text: #f0f0f0;
       --text-muted: #7a8090;
       --radius: 10px;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -54,8 +67,9 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 20vw;
       position: absolute;
-      top: -2vw; left: -1vw;
-      color: rgba(74,143,212,0.05);
+      top: -2vw;
+      left: -1vw;
+      color: rgba(74, 143, 212, 0.05);
       letter-spacing: 0.05em;
       pointer-events: none;
       line-height: 1;
@@ -159,8 +173,17 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .chip:hover  { border-color: var(--blue); color: var(--blue); }
-    .chip.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 500; }
+    .chip:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .chip.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      font-weight: 500;
+    }
 
     /* ===== BOTÓN GHOST para paginación ===== */
     .btn-ghost {
@@ -177,17 +200,31 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .btn-ghost:hover  { background: var(--bg3); color: var(--text); border-color: rgba(255,255,255,0.2); }
-    .btn-ghost:active { transform: scale(0.97); }
+    .btn-ghost:hover {
+      background: var(--bg3);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-ghost:active {
+      transform: scale(0.97);
+    }
 
     /* ===== ÁREA DE RESULTADOS ===== */
-    #results-area { min-height: 200px; }
+    #results-area {
+      min-height: 200px;
+    }
 
     /* Estado de carga */
-    .loading { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
 
     .loading-spinner {
-      width: 38px; height: 38px;
+      width: 38px;
+      height: 38px;
       border: 3px solid var(--border);
       border-top-color: var(--blue);
       border-radius: 50%;
@@ -195,12 +232,16 @@
       margin: 0 auto 1rem;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Caja de error */
     .error-box {
-      background: rgba(192,57,43,0.1);
-      border: 1px solid rgba(192,57,43,0.3);
+      background: rgba(192, 57, 43, 0.1);
+      border: 1px solid rgba(192, 57, 43, 0.3);
       border-radius: var(--radius);
       padding: 1.5rem;
       text-align: center;
@@ -217,7 +258,10 @@
       border-radius: var(--radius);
     }
 
-    .empty-box .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .empty-box .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+    }
 
     /* ===== ENCABEZADO DE RESULTADOS ===== */
     .results-header {
@@ -229,8 +273,15 @@
       gap: 0.5rem;
     }
 
-    .results-count { font-size: 0.8rem; color: var(--text-muted); }
-    .results-count span { color: var(--blue); font-weight: 600; }
+    .results-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .results-count span {
+      color: var(--blue);
+      font-weight: 600;
+    }
 
     /* ===== GRID DE TARJETAS — responsivo ===== */
     .cards-grid {
@@ -250,9 +301,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .movie-card:hover  { border-color: var(--blue); transform: translateY(-3px); }
-    .movie-card:active { transform: scale(0.98); }
-    .movie-card:hover .card-title { color: var(--blue); }
+    .movie-card:hover {
+      border-color: var(--blue);
+      transform: translateY(-3px);
+    }
+
+    .movie-card:active {
+      transform: scale(0.98);
+    }
+
+    .movie-card:hover .card-title {
+      color: var(--blue);
+    }
 
     /* Proporción 2:3 para el póster */
     .poster-wrap {
@@ -262,11 +322,17 @@
       position: relative;
     }
 
-    .poster-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .poster-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     /* Placeholder cuando no hay imagen — Punto 6 del ejercicio */
     .poster-placeholder {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -275,14 +341,22 @@
       gap: 0.5rem;
     }
 
-    .poster-placeholder .ph-icon { font-size: 2.5rem; }
-    .poster-placeholder .ph-text { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .poster-placeholder .ph-icon {
+      font-size: 2.5rem;
+    }
+
+    .poster-placeholder .ph-text {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
     /* Badge de tipo sobre el póster */
     .card-type-badge {
       position: absolute;
-      top: 7px; right: 7px;
-      background: rgba(0,0,0,0.78);
+      top: 7px;
+      right: 7px;
+      background: rgba(0, 0, 0, 0.78);
       color: var(--blue);
       font-size: 0.58rem;
       font-weight: 600;
@@ -292,7 +366,9 @@
       letter-spacing: 0.08em;
     }
 
-    .card-body { padding: 0.7rem; }
+    .card-body {
+      padding: 0.7rem;
+    }
 
     .card-title {
       font-size: 0.8rem;
@@ -306,7 +382,10 @@
       overflow: hidden;
     }
 
-    .card-year { font-size: 0.7rem; color: var(--text-muted); }
+    .card-year {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
 
     /* ===== PAGINACIÓN ===== */
     .pagination {
@@ -318,13 +397,17 @@
       flex-wrap: wrap;
     }
 
-    .page-info { font-size: 0.8rem; color: var(--text-muted); padding: 0 0.75rem; }
+    .page-info {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 0 0.75rem;
+    }
 
     /* ===== MODAL DE DETALLE ===== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.87);
+      background: rgba(0, 0, 0, 0.87);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -335,11 +418,14 @@
       transition: opacity 0.2s;
     }
 
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
     .modal {
       background: var(--bg2);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px;
       max-width: 780px;
       width: 100%;
@@ -350,11 +436,14 @@
       transition: transform 0.2s;
     }
 
-    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
 
     .modal-close {
       position: sticky;
-      top: 0; z-index: 10;
+      top: 0;
+      z-index: 10;
       display: flex;
       justify-content: flex-end;
       padding: 1rem 1rem 0;
@@ -365,7 +454,8 @@
       background: var(--bg3);
       border: 1px solid var(--border);
       color: var(--text-muted);
-      width: 32px; height: 32px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       font-size: 1.1rem;
       cursor: pointer;
@@ -376,11 +466,21 @@
       font-family: sans-serif;
     }
 
-    .close-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+    .close-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
 
-    .modal-content { padding: 0 1.5rem 2rem; }
+    .modal-content {
+      padding: 0 1.5rem 2rem;
+    }
 
-    .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .detail-hero {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
 
     .detail-poster {
       width: 160px;
@@ -391,8 +491,17 @@
       aspect-ratio: 2/3;
     }
 
-    .detail-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .detail-meta { flex: 1; min-width: 200px; }
+    .detail-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .detail-meta {
+      flex: 1;
+      min-width: 200px;
+    }
 
     .detail-title {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -403,23 +512,74 @@
       margin-bottom: 0.5rem;
     }
 
-    .detail-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .detail-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
 
-    .badge { font-size: 0.7rem; padding: 2px 9px; border-radius: 4px; font-weight: 500; letter-spacing: 0.05em; }
-    .badge-year   { background: rgba(74,143,212,0.15); color: var(--blue); }
-    .badge-type   { background: rgba(255,255,255,0.08); color: var(--text-muted); }
-    .badge-rating { background: rgba(192,57,43,0.15);  color: #e74c3c; }
-    .badge-genre  { background: rgba(80,120,200,0.15); color: #8aabdd; }
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 9px;
+      border-radius: 4px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
 
-    .detail-plot { font-size: 0.88rem; line-height: 1.7; color: #ccc; margin-bottom: 1rem; }
+    .badge-year {
+      background: rgba(74, 143, 212, 0.15);
+      color: var(--blue);
+    }
 
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+    .badge-type {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
 
-    .detail-row { font-size: 0.82rem; }
-    .detail-row .lbl { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
-    .detail-row .val { color: var(--text); }
+    .badge-rating {
+      background: rgba(192, 57, 43, 0.15);
+      color: #e74c3c;
+    }
 
-    .ratings-section { margin-top: 1.5rem; }
+    .badge-genre {
+      background: rgba(80, 120, 200, 0.15);
+      color: #8aabdd;
+    }
+
+    .detail-plot {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1rem;
+    }
+
+    .detail-row {
+      font-size: 0.82rem;
+    }
+
+    .detail-row .lbl {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .detail-row .val {
+      color: var(--text);
+    }
+
+    .ratings-section {
+      margin-top: 1.5rem;
+    }
 
     .ratings-title {
       font-size: 0.68rem;
@@ -430,7 +590,11 @@
       font-weight: 600;
     }
 
-    .ratings-list { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .ratings-list {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
 
     .rating-item {
       background: var(--bg3);
@@ -440,17 +604,30 @@
       text-align: center;
     }
 
-    .rating-source { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
-    .rating-value  { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-top: 2px; }
+    .rating-source {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .rating-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2px;
+    }
 
     /* ===== BOTÓN VOLVER ARRIBA ===== */
     .back-top {
       position: fixed;
-      bottom: 1.25rem; right: 1.25rem;
+      bottom: 1.25rem;
+      right: 1.25rem;
       background: var(--blue);
       color: #fff;
       border: none;
-      width: 42px; height: 42px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       font-size: 1.1rem;
       cursor: pointer;
@@ -461,11 +638,17 @@
       transform: translateY(12px);
       transition: all 0.2s;
       z-index: 999;
-      box-shadow: 0 4px 16px rgba(74,143,212,0.3);
+      box-shadow: 0 4px 16px rgba(74, 143, 212, 0.3);
     }
 
-    .back-top.visible { opacity: 1; transform: translateY(0); }
-    .back-top:hover   { background: var(--blue-hover); }
+    .back-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-top:hover {
+      background: var(--blue-hover);
+    }
 
     /* ===== PIE DE PÁGINA ===== */
     footer {
@@ -477,189 +660,224 @@
       margin-top: 3rem;
     }
 
-    footer span { color: var(--blue); }
+    footer span {
+      color: var(--blue);
+    }
 
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .main { padding: 1rem; }
-      .filter-section { padding: 1rem; }
-      .cards-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
-      .detail-poster { width: 120px; }
-      .detail-grid { grid-template-columns: 1fr; }
-      .detail-title { font-size: 1.6rem; }
+      .main {
+        padding: 1rem;
+      }
+
+      .filter-section {
+        padding: 1rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.75rem;
+      }
+
+      .detail-poster {
+        width: 120px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-title {
+        font-size: 1.6rem;
+      }
     }
 
     @media (max-width: 480px) {
-      .hero { padding: 1.25rem 1rem 1rem; }
-      .hero-title { font-size: clamp(2.5rem, 15vw, 4rem); }
-      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-      .modal-content { padding: 0 1rem 1.5rem; }
+      .hero {
+        padding: 1.25rem 1rem 1rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2.5rem, 15vw, 4rem);
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+      }
+
+      .modal-content {
+        padding: 0 1rem 1.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- ===== CABECERA ===== -->
-<header class="hero">
-  <div class="hero-inner">
-    <div class="logo-row">
-      <span class="logo-badge">OMDb</span>
-      <span style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase">Explorador de Series &amp; Películas</span>
+  <!-- ===== CABECERA ===== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="logo-row">
+        <span class="logo-badge">OMDb</span>
+        <span
+          style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase">Explorador
+          de Series &amp; Películas</span>
+      </div>
+      <h1 class="hero-title">BOYS</h1>
+      <p class="hero-sub">Toca un filtro para explorar · Descubre detalles</p>
     </div>
-    <h1 class="hero-title">BOYS</h1>
-    <p class="hero-sub">Toca un filtro para explorar · Descubre detalles</p>
+  </header>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main class="main">
+
+    <!-- ===== FILTROS — chips que buscan al tocar (sin botón Buscar) ===== -->
+    <div class="filter-section">
+      <div class="section-label">🎛️ Filtrar resultados de BOYS</div>
+
+      <!-- Filtro por tipo: al tocar cada chip llama directamente a doSearch() -->
+      <div class="filter-row">
+        <span class="filter-label">Tipo</span>
+        <span class="chip active" data-type="" onclick="setType(this,'')">Todos</span>
+        <span class="chip" data-type="movie" onclick="setType(this,'movie')">🎬 Película</span>
+        <span class="chip" data-type="series" onclick="setType(this,'series')">📺 Serie</span>
+        <span class="chip" data-type="episode" onclick="setType(this,'episode')">📌 Episodio</span>
+      </div>
+
+      <!-- Filtro por año: al tocar llama directamente a doSearch() -->
+      <div class="filter-row">
+        <span class="filter-label">Año</span>
+        <span class="chip active" data-year="" onclick="setYear(this,'')">Todos</span>
+        <span class="chip" data-year="2019" onclick="setYear(this,'2019')">2019</span>
+        <span class="chip" data-year="2020" onclick="setYear(this,'2020')">2020</span>
+        <span class="chip" data-year="2021" onclick="setYear(this,'2021')">2021</span>
+        <span class="chip" data-year="2022" onclick="setYear(this,'2022')">2022</span>
+        <span class="chip" data-year="2023" onclick="setYear(this,'2023')">2023</span>
+        <span class="chip" data-year="2024" onclick="setYear(this,'2024')">2024</span>
+      </div>
+    </div>
+
+    <!-- ===== RESULTADOS ===== -->
+    <div id="results-area">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando títulos Boys...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== MODAL DE DETALLE ===== -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal" id="modal-box">
+      <div class="modal-close">
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-content" id="modal-body"></div>
+    </div>
   </div>
-</header>
 
-<!-- ===== CONTENIDO PRINCIPAL ===== -->
-<main class="main">
+  <button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-  <!-- ===== FILTROS — chips que buscan al tocar (sin botón Buscar) ===== -->
-  <div class="filter-section">
-    <div class="section-label">🎛️ Filtrar resultados de BOYS</div>
+  <footer>
+    Datos provistos por <span>OMDb API</span> · Proyecto académico SENA · Palabra asignada: <span>BOYS</span>
+  </footer>
 
-    <!-- Filtro por tipo: al tocar cada chip llama directamente a doSearch() -->
-    <div class="filter-row">
-      <span class="filter-label">Tipo</span>
-      <span class="chip active" data-type=""        onclick="setType(this,'')">Todos</span>
-      <span class="chip"        data-type="movie"   onclick="setType(this,'movie')">🎬 Película</span>
-      <span class="chip"        data-type="series"  onclick="setType(this,'series')">📺 Serie</span>
-      <span class="chip"        data-type="episode" onclick="setType(this,'episode')">📌 Episodio</span>
-    </div>
-
-    <!-- Filtro por año: al tocar llama directamente a doSearch() -->
-    <div class="filter-row">
-      <span class="filter-label">Año</span>
-      <span class="chip active" data-year=""     onclick="setYear(this,'')">Todos</span>
-      <span class="chip"        data-year="2019" onclick="setYear(this,'2019')">2019</span>
-      <span class="chip"        data-year="2020" onclick="setYear(this,'2020')">2020</span>
-      <span class="chip"        data-year="2021" onclick="setYear(this,'2021')">2021</span>
-      <span class="chip"        data-year="2022" onclick="setYear(this,'2022')">2022</span>
-      <span class="chip"        data-year="2023" onclick="setYear(this,'2023')">2023</span>
-      <span class="chip"        data-year="2024" onclick="setYear(this,'2024')">2024</span>
-    </div>
-  </div>
-
-  <!-- ===== RESULTADOS ===== -->
-  <div id="results-area">
-    <div class="loading">
-      <div class="loading-spinner"></div>
-      <p>Cargando títulos Boys...</p>
-    </div>
-  </div>
-
-</main>
-
-<!-- ===== MODAL DE DETALLE ===== -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
-  <div class="modal" id="modal-box">
-    <div class="modal-close">
-      <button class="close-btn" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-content" id="modal-body"></div>
-  </div>
-</div>
-
-<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-<footer>
-  Datos provistos por <span>OMDb API</span> · Proyecto académico SENA · Palabra asignada: <span>BOYS</span>
-</footer>
-
-<!-- ===== SERVICE WORKER REGISTRATION para PWA ===== -->
-<script>
-  /* Registra el Service Worker si el navegador lo soporta */
-  if ('serviceWorker' in navigator) {
+  <!-- ===== SERVICE WORKER REGISTRATION para PWA ===== -->
+  <script>
+    /* Registra el Service Worker si el navegador lo soporta */
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js')
         .then(() => console.log('Service Worker registrado'))
         .catch(() => console.warn('No se pudo registrar el Service Worker'));
-  }
-</script>
+    }
+  </script>
 
-<script>
-  /* ===== CONFIGURACIÓN DE LA API ===== */
-  const API_KEY   = 'e6625739';
-  const BASE      = 'https://www.omdbapi.com/';
-  const QUERY     = 'Boys';  /* Término fijo — la búsqueda siempre es sobre "Boys" */
+  <script>
+    /* ===== CONFIGURACIÓN DE LA API ===== */
+    const API_KEY = 'e6625739';
+    const BASE = 'https://www.omdbapi.com/';
+    const QUERY = 'Boys';  /* Término fijo — la búsqueda siempre es sobre "Boys" */
 
-  /* Estado global de los filtros y paginación */
-  let currentType  = '';
-  let currentYear  = '';
-  let currentPage  = 1;
-  let totalResults = 0;
+    /* Estado global de los filtros y paginación */
+    let currentType = '';
+    let currentYear = '';
+    let currentPage = 1;
+    let totalResults = 0;
 
-  /* ===== HELPER: maneja valores ausentes o N/A de la API — Punto 6 ===== */
-  function na(val, fallback = '—') {
-    return (!val || val === 'N/A' || val.trim() === '') ? fallback : val;
-  }
+    /* ===== HELPER: maneja valores ausentes o N/A de la API — Punto 6 ===== */
+    function na(val, fallback = '—') {
+      return (!val || val === 'N/A' || val.trim() === '') ? fallback : val;
+    }
 
-  /* ===== HELPER: genera HTML del póster con placeholder si no hay imagen ===== */
-  function posterImg(url, title) {
-    if (!url || url === 'N/A') {
-      return `<div class="poster-placeholder">
+    /* ===== HELPER: genera HTML del póster con placeholder si no hay imagen ===== */
+    function posterImg(url, title) {
+      if (!url || url === 'N/A') {
+        return `<div class="poster-placeholder">
         <div class="ph-icon">🎬</div>
         <div class="ph-text">Imagen no disponible</div>
       </div>`;
-    }
-    return `<img src="${url}" alt="Póster de ${title}" loading="lazy"
+      }
+      return `<img src="${url}" alt="Póster de ${title}" loading="lazy"
       onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><div class=\\'ph-icon\\'>🎬</div><div class=\\'ph-text\\'>Sin imagen</div></div>'">`;
-  }
+    }
 
-  /* ===== CHIPS TIPO — cambia filtro y lanza búsqueda inmediatamente ===== */
-  function setType(el, val) {
-    document.querySelectorAll('[data-type]').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    currentType = val;
-    doSearch(1);  /* Busca al instante sin necesidad de botón */
-  }
+    /* ===== CHIPS TIPO — cambia filtro y lanza búsqueda inmediatamente ===== */
+    function setType(el, val) {
+      document.querySelectorAll('[data-type]').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentType = val;
+      doSearch(1);  /* Busca al instante sin necesidad de botón */
+    }
 
-  /* ===== CHIPS AÑO — cambia filtro y lanza búsqueda inmediatamente ===== */
-  function setYear(el, val) {
-    document.querySelectorAll('[data-year]').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    currentYear = val;
-    doSearch(1);  /* Busca al instante sin necesidad de botón */
-  }
+    /* ===== CHIPS AÑO — cambia filtro y lanza búsqueda inmediatamente ===== */
+    function setYear(el, val) {
+      document.querySelectorAll('[data-year]').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentYear = val;
+      doSearch(1);  /* Busca al instante sin necesidad de botón */
+    }
 
-  /* ===== BÚSQUEDA PRINCIPAL — endpoint ?s= con término fijo "Boys" ===== */
-  async function doSearch(page = 1) {
-    currentPage = page;
-    showLoading();
+    /* ===== BÚSQUEDA PRINCIPAL — endpoint ?s= con término fijo "Boys" ===== */
+    async function doSearch(page = 1) {
+      currentPage = page;
+      showLoading();
 
-    const cacheKey = `search-${currentType}-${currentYear}-${page}`;
-    let url = `${BASE}?apikey=${API_KEY}&s=${encodeURIComponent(QUERY)}&page=${page}`;
-    if (currentType) url += `&type=${currentType}`;
-    if (currentYear) url += `&y=${currentYear}`;
+      const cacheKey = `search-${currentType}-${currentYear}-${page}`;
+      let url = `${BASE}?apikey=${API_KEY}&s=${encodeURIComponent(QUERY)}&page=${page}`;
+      if (currentType) url += `&type=${currentType}`;
+      if (currentYear) url += `&y=${currentYear}`;
 
-    try {
-      const res  = await fetch(url);
-      const data = await res.json();
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-      if (data.Response === 'False') {
-        showEmpty(data.Error || 'No se encontraron resultados con estos filtros.');
-      } else {
-        totalResults = parseInt(data.totalResults) || 0;
-        localStorage.setItem(cacheKey, JSON.stringify({ search: data.Search, total: totalResults }));
-        renderResults(data.Search, page);
-      }
-    } catch (e) {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        totalResults = parsed.total || 0;
-        renderResults(parsed.search, page);
-      } else {
-        showError('Error de conexión. Verifica tu internet e intenta de nuevo.');
+        if (data.Response === 'False') {
+          showEmpty(data.Error || 'No se encontraron resultados con estos filtros.');
+        } else {
+          totalResults = parseInt(data.totalResults) || 0;
+          localStorage.setItem(cacheKey, JSON.stringify({ search: data.Search, total: totalResults }));
+          renderResults(data.Search, page);
+        }
+      } catch (e) {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          totalResults = parsed.total || 0;
+          renderResults(parsed.search, page);
+        } else {
+          showError('Error de conexión. Verifica tu internet e intenta de nuevo.');
+        }
       }
     }
-  }
 
-  /* ===== RENDERIZADO DE TARJETAS ===== */
-  function renderResults(items, page) {
-    const totalPages = Math.ceil(totalResults / 10);
+    /* ===== RENDERIZADO DE TARJETAS ===== */
+    function renderResults(items, page) {
+      const totalPages = Math.ceil(totalResults / 10);
 
-    let html = `
+      let html = `
       <div class="results-header">
         <div class="results-count">
           <span>${totalResults}</span> resultado${totalResults !== 1 ? 's' : ''} para <em>"${QUERY}"</em>
@@ -668,9 +886,9 @@
       </div>
       <div class="cards-grid">`;
 
-    /* Una tarjeta por cada resultado devuelto por la API */
-    items.forEach(item => {
-      html += `
+      /* Una tarjeta por cada resultado devuelto por la API */
+      items.forEach(item => {
+        html += `
         <div class="movie-card" onclick="openDetail('${item.imdbID}')">
           <div class="poster-wrap">
             ${posterImg(item.Poster, item.Title)}
@@ -681,75 +899,75 @@
             <div class="card-year">${na(item.Year)}</div>
           </div>
         </div>`;
-    });
+      });
 
-    html += `</div>`;
-
-    /* Paginación si hay más de una página de resultados */
-    if (totalPages > 1) {
-      html += `<div class="pagination">`;
-      if (page > 1)          html += `<button class="btn-ghost" onclick="doSearch(${page - 1})">← Anterior</button>`;
-      html += `<span class="page-info">Pág. ${page} / ${totalPages}</span>`;
-      if (page < totalPages) html += `<button class="btn-ghost" onclick="doSearch(${page + 1})">Siguiente →</button>`;
       html += `</div>`;
-    }
 
-    document.getElementById('results-area').innerHTML = html;
-  }
-
-  /* ===== DETALLE — endpoint ?i= por IMDb ID ===== */
-  async function openDetail(imdbID) {
-    const overlay = document.getElementById('modal-overlay');
-    const body    = document.getElementById('modal-body');
-    const cacheKey = `detail-${imdbID}`;
-
-    body.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando detalles...</p></div>`;
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-
-    try {
-      const res = await fetch(`${BASE}?apikey=${API_KEY}&i=${imdbID}&plot=full`);
-      const d   = await res.json();
-
-      if (d.Response === 'False') {
-        body.innerHTML = `<div class="error-box">⚠️ No se pudieron cargar los detalles: ${d.Error}</div>`;
-        return;
+      /* Paginación si hay más de una página de resultados */
+      if (totalPages > 1) {
+        html += `<div class="pagination">`;
+        if (page > 1) html += `<button class="btn-ghost" onclick="doSearch(${page - 1})">← Anterior</button>`;
+        html += `<span class="page-info">Pág. ${page} / ${totalPages}</span>`;
+        if (page < totalPages) html += `<button class="btn-ghost" onclick="doSearch(${page + 1})">Siguiente →</button>`;
+        html += `</div>`;
       }
 
-      /* Construir sección de valoraciones; si no hay, mostrar aviso — Punto 6 */
-      let ratingsHtml = '<div class="ratings-section"><div class="ratings-title">★ Valoraciones</div>';
-      if (d.Ratings && d.Ratings.length > 0) {
-        ratingsHtml += '<div class="ratings-list">';
-        d.Ratings.forEach(r => {
-          const src = r.Source
-            .replace('Internet Movie Database', 'IMDb')
-            .replace('Rotten Tomatoes', 'Rotten T.');
-          ratingsHtml += `<div class="rating-item">
+      document.getElementById('results-area').innerHTML = html;
+    }
+
+    /* ===== DETALLE — endpoint ?i= por IMDb ID ===== */
+    async function openDetail(imdbID) {
+      const overlay = document.getElementById('modal-overlay');
+      const body = document.getElementById('modal-body');
+      const cacheKey = `detail-${imdbID}`;
+
+      body.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando detalles...</p></div>`;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      try {
+        const res = await fetch(`${BASE}?apikey=${API_KEY}&i=${imdbID}&plot=full`);
+        const d = await res.json();
+
+        if (d.Response === 'False') {
+          body.innerHTML = `<div class="error-box">⚠️ No se pudieron cargar los detalles: ${d.Error}</div>`;
+          return;
+        }
+
+        /* Construir sección de valoraciones; si no hay, mostrar aviso — Punto 6 */
+        let ratingsHtml = '<div class="ratings-section"><div class="ratings-title">★ Valoraciones</div>';
+        if (d.Ratings && d.Ratings.length > 0) {
+          ratingsHtml += '<div class="ratings-list">';
+          d.Ratings.forEach(r => {
+            const src = r.Source
+              .replace('Internet Movie Database', 'IMDb')
+              .replace('Rotten Tomatoes', 'Rotten T.');
+            ratingsHtml += `<div class="rating-item">
             <div class="rating-source">${src}</div>
             <div class="rating-value">${r.Value}</div>
           </div>`;
-        });
-        ratingsHtml += '</div>';
-      } else {
-        /* Texto informativo cuando la API no provee valoraciones */
-        ratingsHtml += `<p style="font-size:0.82rem;color:var(--text-muted);font-style:italic;">
+          });
+          ratingsHtml += '</div>';
+        } else {
+          /* Texto informativo cuando la API no provee valoraciones */
+          ratingsHtml += `<p style="font-size:0.82rem;color:var(--text-muted);font-style:italic;">
           No hay valoraciones disponibles para este título.</p>`;
-      }
-      ratingsHtml += '</div>';
+        }
+        ratingsHtml += '</div>';
 
-      /* Inyectar el detalle completo en el modal */
-      body.innerHTML = `
+        /* Inyectar el detalle completo en el modal */
+        body.innerHTML = `
         <div class="detail-hero">
           <div class="detail-poster">${posterImg(d.Poster, d.Title)}</div>
           <div class="detail-meta">
             <h2 class="detail-title">${d.Title}</h2>
             <div class="detail-badges">
-              ${d.Year  !== 'N/A' ? `<span class="badge badge-year">${d.Year}</span>` : ''}
-              ${d.Type  !== 'N/A' ? `<span class="badge badge-type">${d.Type}</span>` : ''}
+              ${d.Year !== 'N/A' ? `<span class="badge badge-year">${d.Year}</span>` : ''}
+              ${d.Type !== 'N/A' ? `<span class="badge badge-type">${d.Type}</span>` : ''}
               ${d.Rated !== 'N/A' ? `<span class="badge badge-rating">${d.Rated}</span>` : ''}
               ${d.Genre !== 'N/A'
-                ? d.Genre.split(',').slice(0,3).map(g=>`<span class="badge badge-genre">${g.trim()}</span>`).join('')
-                : ''}
+            ? d.Genre.split(',').slice(0, 3).map(g => `<span class="badge badge-genre">${g.trim()}</span>`).join('')
+            : ''}
             </div>
             <!-- Sinopsis con texto alternativo si la API no la provee — Punto 6 -->
             <p class="detail-plot">${na(d.Plot, 'Sinopsis no disponible para este título.')}</p>
@@ -770,54 +988,55 @@
           <a href="https://www.imdb.com/title/${d.imdbID}" target="_blank"
             style="color:var(--blue);font-size:0.82rem;text-decoration:none;">Ver en IMDb ↗</a>
         </div>`;
-    } catch (e) {
-      body.innerHTML = `<div class="error-box">⚠️ Error de conexión al cargar los detalles. Intenta de nuevo.</div>`;
+      } catch (e) {
+        body.innerHTML = `<div class="error-box">⚠️ Error de conexión al cargar los detalles. Intenta de nuevo.</div>`;
+      }
     }
-  }
 
-  /* ===== CERRAR MODAL ===== */
-  function closeModal() {
-    document.getElementById('modal-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+    /* ===== CERRAR MODAL ===== */
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
 
-  function closeModalOnOverlay(e) {
-    if (e.target === document.getElementById('modal-overlay')) closeModal();
-  }
+    function closeModalOnOverlay(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
 
-  /* ===== ESTADOS DE LA UI ===== */
-  function showLoading() {
-    document.getElementById('results-area').innerHTML = `
+    /* ===== ESTADOS DE LA UI ===== */
+    function showLoading() {
+      document.getElementById('results-area').innerHTML = `
       <div class="loading"><div class="loading-spinner"></div><p>Buscando en OMDb...</p></div>`;
-  }
+    }
 
-  function showError(msg) {
-    document.getElementById('results-area').innerHTML =
-      `<div class="error-box">⚠️ ${msg}</div>`;
-  }
+    function showError(msg) {
+      document.getElementById('results-area').innerHTML =
+        `<div class="error-box">⚠️ ${msg}</div>`;
+    }
 
-  function showEmpty(msg) {
-    document.getElementById('results-area').innerHTML = `
+    function showEmpty(msg) {
+      document.getElementById('results-area').innerHTML = `
       <div class="empty-box">
         <div class="empty-icon">🔍</div>
         <p style="font-weight:500;margin-bottom:0.25rem;">Sin resultados</p>
         <p style="font-size:0.82rem;">${msg}</p>
       </div>`;
-  }
+    }
 
-  /* ===== BOTÓN SCROLL TOP ===== */
-  window.addEventListener('scroll', () => {
-    document.getElementById('back-top').classList.toggle('visible', window.scrollY > 300);
-  });
+    /* ===== BOTÓN SCROLL TOP ===== */
+    window.addEventListener('scroll', () => {
+      document.getElementById('back-top').classList.toggle('visible', window.scrollY > 300);
+    });
 
-  /* ===== Cerrar modal con tecla Escape ===== */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeModal();
-  });
+    /* ===== Cerrar modal con tecla Escape ===== */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
 
-  /* ===== CARGA INICIAL: busca "Boys" automáticamente al abrir la página ===== */
-  doSearch(1);
+    /* ===== CARGA INICIAL: busca "Boys" automáticamente al abrir la página ===== */
+    doSearch(1);
 
-</script>
+  </script>
 </body>
+
 </html>

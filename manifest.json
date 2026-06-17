@@ -1,9 +1,9 @@
 {
   "name": "BOYS — Explorador OMDb",
   "short_name": "BOYS",
-  "description": "Explorador de títulos Boys en OMDb — Series, películas y episodios con soporte offline",
-  "start_url": "/OMDB_API/index.html",
-  "scope": "/OMDB_API/",
+  "description": "Explorador de títulos Boys en OMDb",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#09090f",
@@ -11,16 +11,16 @@
   "categories": ["entertainment"],
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
