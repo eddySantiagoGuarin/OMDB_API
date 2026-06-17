@@ -1,26 +1,39 @@
 {
   "name": "BOYS — Explorador OMDb",
   "short_name": "BOYS",
-  "description": "Explorador de títulos Boys en OMDb",
-  "start_url": "./",
-  "scope": "./",
+  "description": "Explorador de títulos Boys en OMDb — Series, películas y episodios",
+  "start_url": "/OMDB_API/index.html",
+  "scope": "/OMDB_API/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#09090f",
   "theme_color": "#4A8FD4",
   "categories": ["entertainment"],
+  "screenshots": [
+    {
+      "src": "/OMDB_API/no-poster.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/OMDB_API/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/OMDB_API/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/OMDB_API/no-poster.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

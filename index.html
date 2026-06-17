@@ -789,7 +789,7 @@
   <script>
     /* Registra el Service Worker si el navegador lo soporta */
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('/OMDB_API/sw.js')
         .then(() => console.log('Service Worker registrado'))
         .catch(() => console.warn('No se pudo registrar el Service Worker'));
     }
