@@ -1,11 +1,11 @@
 const CACHE_NAME = 'boys-omdb-v1';
-const OFFLINE_URL = './index.html';
+const OFFLINE_URL = '/OMDB_API/index.html';
 const PRECACHE_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png' 
+  '/OMDB_API/',
+  '/OMDB_API/index.html',
+  '/OMDB_API/manifest.json',
+  '/OMDB_API/icon-192.png',
+  '/OMDB_API/icon-512.png' 
 ];
 
 self.addEventListener('install', event => {
