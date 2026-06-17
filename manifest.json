@@ -8,8 +8,7 @@
   "background_color": "#09090f",
   "theme_color": "#4A8FD4",
   "orientation": "portrait-primary",
-  "screenshots": [],
-  "categories": ["entertainment", "productivity"],
+  "display_override": ["standalone", "fullscreen"],
   "icons": [
     {
       "src": "./icon-192.png",
@@ -18,19 +17,10 @@
       "purpose": "any"
     },
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
+      "src": "./icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Buscar BOYS",
-      "short_name": "Buscar",
-      "description": "Abre la búsqueda de títulos BOYS",
-      "url": "./index.html",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "purpose": "any"
     }
   ]
 }

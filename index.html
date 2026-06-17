@@ -479,51 +479,6 @@
 
     footer span { color: var(--blue); }
 
-    /* ===== BOTÓN INSTALAR PWA ===== */
-    #btn-instalar {
-      display: block;               /* Mostrar siempre como fallback */
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      padding: 0.55rem 1.2rem;
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.18s;
-      box-shadow: 0 3px 14px rgba(74,143,212,0.35);
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    #btn-instalar:hover  { background: var(--blue-hover); transform: translateY(-1px); }
-    #btn-instalar:active { transform: scale(0.97); }
-
-    /* Toast de confirmación tras instalar */
-    #pwa-toast {
-      position: fixed;
-      bottom: 5rem; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--bg3);
-      border: 1px solid var(--blue);
-      color: var(--text);
-      padding: 0.65rem 1.4rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-      z-index: 9999;
-      white-space: nowrap;
-    }
-
-    #pwa-toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
@@ -554,15 +509,8 @@
     </div>
     <h1 class="hero-title">BOYS</h1>
     <p class="hero-sub">Toca un filtro para explorar · Descubre detalles</p>
-    <!-- Botón de instalación PWA — aparece solo cuando el navegador lo permite -->
-    <button id="btn-instalar" onclick="instalarPWA()">
-      ⬇️ Instalar aplicación
-    </button>
   </div>
 </header>
-
-<!-- Toast de confirmación tras instalar -->
-<div id="pwa-toast">✅ ¡App instalada correctamente!</div>
 
 <!-- ===== CONTENIDO PRINCIPAL ===== -->
 <main class="main">
@@ -870,39 +818,6 @@
   /* ===== CARGA INICIAL: busca "Boys" automáticamente al abrir la página ===== */
   doSearch(1);
 
-  /* ===== PWA — BOTÓN DE INSTALACIÓN ===== */
-  /* El navegador dispara este evento cuando la app cumple los criterios PWA
-     y está lista para instalarse. Lo capturamos para mostrar nuestro botón. */
-  let deferredPrompt = null;
-
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log('beforeinstallprompt capturado - PWA lista para instalar');
-  });
-
-  async function instalarPWA() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`Usuario eligió: ${outcome}`);
-      deferredPrompt = null;
-
-      if (outcome === 'accepted') {
-        document.getElementById('btn-instalar').textContent = '✅ ¡App instalada!';
-        setTimeout(() => {
-          document.getElementById('btn-instalar').textContent = '⬇️ Instalar aplicación';
-        }, 3000);
-      }
-    } else {
-      alert('Para instalar esta PWA:\n\n1. Chrome/Edge: Haz clic en el ícono "Instalar" en la barra de direcciones\n2. Safari: Abre el menú Compartir > Agregar a Pantalla de Inicio\n3. Firefox: Aún no soporta instalación PWA');
-    }
-  }
-
-  window.addEventListener('appinstalled', () => {
-    console.log('PWA instalada exitosamente');
-    document.getElementById('btn-instalar').textContent = '✅ ¡App instalada!';
-  });
 </script>
 </body>
 </html>
