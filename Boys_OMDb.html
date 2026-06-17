@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090f">
+  <meta name="description" content="Explorador de títulos Boys en OMDb — Series, películas y episodios">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BOYS OMDb">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <!-- Icono para iOS -->
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>BOYS — Explorador OMDb</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET Y BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== VARIABLES DE COLOR ===== */
+    :root {
+      --blue: #4A8FD4;
+      --blue-hover: #5FA3E8;
+      --blue-dim: #2C6FAC;
+      --bg: #09090f;
+      --bg2: #11111c;
+      --bg3: #1a1a2a;
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f0;
+      --text-muted: #7a8090;
+      --radius: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== CABECERA HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #09090f 0%, #0a0f20 50%, #09090f 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: 'BOYS';
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20vw;
+      position: absolute;
+      top: -2vw; left: -1vw;
+      color: rgba(74,143,212,0.05);
+      letter-spacing: 0.05em;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-badge {
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      padding: 2px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      color: var(--blue);
+      letter-spacing: 0.05em;
+      line-height: 0.9;
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 2rem;
+    }
+
+    /* ===== PANEL DE FILTROS ===== */
+    .filter-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      min-width: 36px;
+    }
+
+    /* ===== CHIPS — al tocar ejecutan la búsqueda de inmediato ===== */
+    .chip {
+      padding: 0.38rem 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .chip:hover  { border-color: var(--blue); color: var(--blue); }
+    .chip.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 500; }
+
+    /* ===== BOTÓN GHOST para paginación ===== */
+    .btn-ghost {
+      padding: 0.6rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      color: var(--text-muted);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-ghost:hover  { background: var(--bg3); color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .btn-ghost:active { transform: scale(0.97); }
+
+    /* ===== ÁREA DE RESULTADOS ===== */
+    #results-area { min-height: 200px; }
+
+    /* Estado de carga */
+    .loading { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+
+    .loading-spinner {
+      width: 38px; height: 38px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Caja de error */
+    .error-box {
+      background: rgba(192,57,43,0.1);
+      border: 1px solid rgba(192,57,43,0.3);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      color: #e74c3c;
+    }
+
+    /* Caja vacía */
+    .empty-box {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+      background: var(--bg2);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    .empty-box .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+
+    /* ===== ENCABEZADO DE RESULTADOS ===== */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .results-count { font-size: 0.8rem; color: var(--text-muted); }
+    .results-count span { color: var(--blue); font-weight: 600; }
+
+    /* ===== GRID DE TARJETAS — responsivo ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Tarjeta individual */
+    .movie-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .movie-card:hover  { border-color: var(--blue); transform: translateY(-3px); }
+    .movie-card:active { transform: scale(0.98); }
+    .movie-card:hover .card-title { color: var(--blue); }
+
+    /* Proporción 2:3 para el póster */
+    .poster-wrap {
+      aspect-ratio: 2/3;
+      background: var(--bg3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .poster-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Placeholder cuando no hay imagen — Punto 6 del ejercicio */
+    .poster-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 0.5rem;
+    }
+
+    .poster-placeholder .ph-icon { font-size: 2.5rem; }
+    .poster-placeholder .ph-text { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* Badge de tipo sobre el póster */
+    .card-type-badge {
+      position: absolute;
+      top: 7px; right: 7px;
+      background: rgba(0,0,0,0.78);
+      color: var(--blue);
+      font-size: 0.58rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card-body { padding: 0.7rem; }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 3px;
+      transition: color 0.15s;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-year { font-size: 0.7rem; color: var(--text-muted); }
+
+    /* ===== PAGINACIÓN ===== */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .page-info { font-size: 0.8rem; color: var(--text-muted); padding: 0 0.75rem; }
+
+    /* ===== MODAL DE DETALLE ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.87);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      max-width: 780px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.open .modal { transform: scale(1); }
+
+    .modal-close {
+      position: sticky;
+      top: 0; z-index: 10;
+      display: flex;
+      justify-content: flex-end;
+      padding: 1rem 1rem 0;
+      background: var(--bg2);
+    }
+
+    .close-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-family: sans-serif;
+    }
+
+    .close-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+    .modal-content { padding: 0 1.5rem 2rem; }
+
+    .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+    .detail-poster {
+      width: 160px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg3);
+      aspect-ratio: 2/3;
+    }
+
+    .detail-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .detail-meta { flex: 1; min-width: 200px; }
+
+    .detail-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--blue);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+
+    .badge { font-size: 0.7rem; padding: 2px 9px; border-radius: 4px; font-weight: 500; letter-spacing: 0.05em; }
+    .badge-year   { background: rgba(74,143,212,0.15); color: var(--blue); }
+    .badge-type   { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+    .badge-rating { background: rgba(192,57,43,0.15);  color: #e74c3c; }
+    .badge-genre  { background: rgba(80,120,200,0.15); color: #8aabdd; }
+
+    .detail-plot { font-size: 0.88rem; line-height: 1.7; color: #ccc; margin-bottom: 1rem; }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+
+    .detail-row { font-size: 0.82rem; }
+    .detail-row .lbl { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
+    .detail-row .val { color: var(--text); }
+
+    .ratings-section { margin-top: 1.5rem; }
+
+    .ratings-title {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .ratings-list { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .rating-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      text-align: center;
+    }
+
+    .rating-source { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .rating-value  { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-top: 2px; }
+
+    /* ===== BOTÓN VOLVER ARRIBA ===== */
+    .back-top {
+      position: fixed;
+      bottom: 1.25rem; right: 1.25rem;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.2s;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(74,143,212,0.3);
+    }
+
+    .back-top.visible { opacity: 1; transform: translateY(0); }
+    .back-top:hover   { background: var(--blue-hover); }
+
+    /* ===== PIE DE PÁGINA ===== */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    footer span { color: var(--blue); }
+
+    /* ===== BOTÓN INSTALAR PWA ===== */
+    #btn-instalar {
+      display: none;               /* Oculto hasta que el navegador dispare beforeinstallprompt */
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.55rem 1.2rem;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 3px 14px rgba(74,143,212,0.35);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #btn-instalar:hover  { background: var(--blue-hover); transform: translateY(-1px); }
+    #btn-instalar:active { transform: scale(0.97); }
+    #btn-instalar.visible { display: inline-flex; }
+
+    /* Toast de confirmación tras instalar */
+    #pwa-toast {
+      position: fixed;
+      bottom: 5rem; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg3);
+      border: 1px solid var(--blue);
+      color: var(--text);
+      padding: 0.65rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    #pwa-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .main { padding: 1rem; }
+      .filter-section { padding: 1rem; }
+      .cards-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+      .detail-poster { width: 120px; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-title { font-size: 1.6rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding: 1.25rem 1rem 1rem; }
+      .hero-title { font-size: clamp(2.5rem, 15vw, 4rem); }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+      .modal-content { padding: 0 1rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== CABECERA ===== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="logo-row">
+      <span class="logo-badge">OMDb</span>
+      <span style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase">Explorador de Series &amp; Películas</span>
+    </div>
+    <h1 class="hero-title">BOYS</h1>
+    <p class="hero-sub">Toca un filtro para explorar · Descubre detalles</p>
+    <!-- Botón de instalación PWA — aparece solo cuando el navegador lo permite -->
+    <button id="btn-instalar" onclick="instalarPWA()">
+      ⬇️ Instalar aplicación
+    </button>
+  </div>
+</header>
+
+<!-- Toast de confirmación tras instalar -->
+<div id="pwa-toast">✅ ¡App instalada correctamente!</div>
+
+<!-- ===== CONTENIDO PRINCIPAL ===== -->
+<main class="main">
+
+  <!-- ===== FILTROS — chips que buscan al tocar (sin botón Buscar) ===== -->
+  <div class="filter-section">
+    <div class="section-label">🎛️ Filtrar resultados de BOYS</div>
+
+    <!-- Filtro por tipo: al tocar cada chip llama directamente a doSearch() -->
+    <div class="filter-row">
+      <span class="filter-label">Tipo</span>
+      <span class="chip active" data-type=""        onclick="setType(this,'')">Todos</span>
+      <span class="chip"        data-type="movie"   onclick="setType(this,'movie')">🎬 Película</span>
+      <span class="chip"        data-type="series"  onclick="setType(this,'series')">📺 Serie</span>
+      <span class="chip"        data-type="episode" onclick="setType(this,'episode')">📌 Episodio</span>
+    </div>
+
+    <!-- Filtro por año: al tocar llama directamente a doSearch() -->
+    <div class="filter-row">
+      <span class="filter-label">Año</span>
+      <span class="chip active" data-year=""     onclick="setYear(this,'')">Todos</span>
+      <span class="chip"        data-year="2019" onclick="setYear(this,'2019')">2019</span>
+      <span class="chip"        data-year="2020" onclick="setYear(this,'2020')">2020</span>
+      <span class="chip"        data-year="2021" onclick="setYear(this,'2021')">2021</span>
+      <span class="chip"        data-year="2022" onclick="setYear(this,'2022')">2022</span>
+      <span class="chip"        data-year="2023" onclick="setYear(this,'2023')">2023</span>
+      <span class="chip"        data-year="2024" onclick="setYear(this,'2024')">2024</span>
+    </div>
+  </div>
+
+  <!-- ===== RESULTADOS ===== -->
+  <div id="results-area">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <p>Cargando títulos Boys...</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== MODAL DE DETALLE ===== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-close">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-content" id="modal-body"></div>
+  </div>
+</div>
+
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<footer>
+  Datos provistos por <span>OMDb API</span> · Proyecto académico SENA · Palabra asignada: <span>BOYS</span>
+</footer>
+
+<!-- ===== SERVICE WORKER INLINE para PWA ===== -->
+<script>
+  /* Registra el Service Worker si el navegador lo soporta */
+  if ('serviceWorker' in navigator) {
+    /* Creamos el SW como Blob para no necesitar un archivo externo */
+    const swCode = `
+      const CACHE = 'boys-omdb-v1';
+      const STATIC = ['/'];
+
+      /* Al instalar: guarda los recursos estáticos en caché */
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
+        self.skipWaiting();
+      });
+
+      /* Al activar: elimina cachés viejos */
+      self.addEventListener('activate', e => {
+        e.waitUntil(
+          caches.keys().then(keys =>
+            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+          )
+        );
+        self.clients.claim();
+      });
+
+      /* Estrategia Network First: intenta red, si falla usa caché */
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          fetch(e.request)
+            .then(res => {
+              const clone = res.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone));
+              return res;
+            })
+            .catch(() => caches.match(e.request))
+        );
+      });
+    `;
+    const blob   = new Blob([swCode], { type: 'application/javascript' });
+    const swURL  = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swURL).catch(() => {});
+  }
+</script>
+
+<script>
+  /* ===== CONFIGURACIÓN DE LA API ===== */
+  const API_KEY   = 'e6625739';
+  const BASE      = 'https://www.omdbapi.com/';
+  const QUERY     = 'Boys';  /* Término fijo — la búsqueda siempre es sobre "Boys" */
+
+  /* Estado global de los filtros y paginación */
+  let currentType  = '';
+  let currentYear  = '';
+  let currentPage  = 1;
+  let totalResults = 0;
+
+  /* ===== HELPER: maneja valores ausentes o N/A de la API — Punto 6 ===== */
+  function na(val, fallback = '—') {
+    return (!val || val === 'N/A' || val.trim() === '') ? fallback : val;
+  }
+
+  /* ===== HELPER: genera HTML del póster con placeholder si no hay imagen ===== */
+  function posterImg(url, title) {
+    if (!url || url === 'N/A') {
+      return `<div class="poster-placeholder">
+        <div class="ph-icon">🎬</div>
+        <div class="ph-text">Imagen no disponible</div>
+      </div>`;
+    }
+    return `<img src="${url}" alt="Póster de ${title}" loading="lazy"
+      onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><div class=\\'ph-icon\\'>🎬</div><div class=\\'ph-text\\'>Sin imagen</div></div>'">`;
+  }
+
+  /* ===== CHIPS TIPO — cambia filtro y lanza búsqueda inmediatamente ===== */
+  function setType(el, val) {
+    document.querySelectorAll('[data-type]').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentType = val;
+    doSearch(1);  /* Busca al instante sin necesidad de botón */
+  }
+
+  /* ===== CHIPS AÑO — cambia filtro y lanza búsqueda inmediatamente ===== */
+  function setYear(el, val) {
+    document.querySelectorAll('[data-year]').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentYear = val;
+    doSearch(1);  /* Busca al instante sin necesidad de botón */
+  }
+
+  /* ===== BÚSQUEDA PRINCIPAL — endpoint ?s= con término fijo "Boys" ===== */
+  async function doSearch(page = 1) {
+    currentPage = page;
+    showLoading();
+
+    /* Construcción de la URL: siempre busca "Boys", aplica filtros activos */
+    let url = `${BASE}?apikey=${API_KEY}&s=${encodeURIComponent(QUERY)}&page=${page}`;
+    if (currentType) url += `&type=${currentType}`;
+    if (currentYear) url += `&y=${currentYear}`;
+
+    try {
+      /* Petición HTTP al servicio OMDb */
+      const res  = await fetch(url);
+      const data = await res.json();  /* Procesamiento del JSON recibido */
+
+      /* Manejo de respuesta negativa de la API — Punto 6 */
+      if (data.Response === 'False') {
+        showEmpty(data.Error || 'No se encontraron resultados con estos filtros.');
+      } else {
+        totalResults = parseInt(data.totalResults) || 0;
+        renderResults(data.Search, page);
+      }
+    } catch (e) {
+      showError('Error de conexión. Verifica tu internet e intenta de nuevo.');
+    }
+  }
+
+  /* ===== RENDERIZADO DE TARJETAS ===== */
+  function renderResults(items, page) {
+    const totalPages = Math.ceil(totalResults / 10);
+
+    let html = `
+      <div class="results-header">
+        <div class="results-count">
+          <span>${totalResults}</span> resultado${totalResults !== 1 ? 's' : ''} para <em>"${QUERY}"</em>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">Pág. ${page} / ${totalPages}</div>
+      </div>
+      <div class="cards-grid">`;
+
+    /* Una tarjeta por cada resultado devuelto por la API */
+    items.forEach(item => {
+      html += `
+        <div class="movie-card" onclick="openDetail('${item.imdbID}')">
+          <div class="poster-wrap">
+            ${posterImg(item.Poster, item.Title)}
+            <span class="card-type-badge">${item.Type}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${item.Title}</div>
+            <div class="card-year">${na(item.Year)}</div>
+          </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+
+    /* Paginación si hay más de una página de resultados */
+    if (totalPages > 1) {
+      html += `<div class="pagination">`;
+      if (page > 1)          html += `<button class="btn-ghost" onclick="doSearch(${page - 1})">← Anterior</button>`;
+      html += `<span class="page-info">Pág. ${page} / ${totalPages}</span>`;
+      if (page < totalPages) html += `<button class="btn-ghost" onclick="doSearch(${page + 1})">Siguiente →</button>`;
+      html += `</div>`;
+    }
+
+    document.getElementById('results-area').innerHTML = html;
+  }
+
+  /* ===== DETALLE — endpoint ?i= por IMDb ID ===== */
+  async function openDetail(imdbID) {
+    const overlay = document.getElementById('modal-overlay');
+    const body    = document.getElementById('modal-body');
+
+    body.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando detalles...</p></div>`;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    try {
+      const res = await fetch(`${BASE}?apikey=${API_KEY}&i=${imdbID}&plot=full`);
+      const d   = await res.json();
+
+      if (d.Response === 'False') {
+        body.innerHTML = `<div class="error-box">⚠️ No se pudieron cargar los detalles: ${d.Error}</div>`;
+        return;
+      }
+
+      /* Construir sección de valoraciones; si no hay, mostrar aviso — Punto 6 */
+      let ratingsHtml = '<div class="ratings-section"><div class="ratings-title">★ Valoraciones</div>';
+      if (d.Ratings && d.Ratings.length > 0) {
+        ratingsHtml += '<div class="ratings-list">';
+        d.Ratings.forEach(r => {
+          const src = r.Source
+            .replace('Internet Movie Database', 'IMDb')
+            .replace('Rotten Tomatoes', 'Rotten T.');
+          ratingsHtml += `<div class="rating-item">
+            <div class="rating-source">${src}</div>
+            <div class="rating-value">${r.Value}</div>
+          </div>`;
+        });
+        ratingsHtml += '</div>';
+      } else {
+        /* Texto informativo cuando la API no provee valoraciones */
+        ratingsHtml += `<p style="font-size:0.82rem;color:var(--text-muted);font-style:italic;">
+          No hay valoraciones disponibles para este título.</p>`;
+      }
+      ratingsHtml += '</div>';
+
+      /* Inyectar el detalle completo en el modal */
+      body.innerHTML = `
+        <div class="detail-hero">
+          <div class="detail-poster">${posterImg(d.Poster, d.Title)}</div>
+          <div class="detail-meta">
+            <h2 class="detail-title">${d.Title}</h2>
+            <div class="detail-badges">
+              ${d.Year  !== 'N/A' ? `<span class="badge badge-year">${d.Year}</span>` : ''}
+              ${d.Type  !== 'N/A' ? `<span class="badge badge-type">${d.Type}</span>` : ''}
+              ${d.Rated !== 'N/A' ? `<span class="badge badge-rating">${d.Rated}</span>` : ''}
+              ${d.Genre !== 'N/A'
+                ? d.Genre.split(',').slice(0,3).map(g=>`<span class="badge badge-genre">${g.trim()}</span>`).join('')
+                : ''}
+            </div>
+            <!-- Sinopsis con texto alternativo si la API no la provee — Punto 6 -->
+            <p class="detail-plot">${na(d.Plot, 'Sinopsis no disponible para este título.')}</p>
+            <div class="detail-grid">
+              <div class="detail-row"><span class="lbl">Director</span><span class="val">${na(d.Director)}</span></div>
+              <div class="detail-row"><span class="lbl">Duración</span><span class="val">${na(d.Runtime)}</span></div>
+              <div class="detail-row"><span class="lbl">País</span><span class="val">${na(d.Country)}</span></div>
+              <div class="detail-row"><span class="lbl">Idioma</span><span class="val">${na(d.Language)}</span></div>
+              <div class="detail-row"><span class="lbl">Estreno</span><span class="val">${na(d.Released)}</span></div>
+              <div class="detail-row"><span class="lbl">IMDb ID</span><span class="val" style="font-family:monospace;font-size:0.76rem;">${na(d.imdbID)}</span></div>
+              <div class="detail-row" style="grid-column:1/-1"><span class="lbl">Reparto</span><span class="val">${na(d.Actors)}</span></div>
+              <div class="detail-row" style="grid-column:1/-1"><span class="lbl">Premios</span><span class="val">${na(d.Awards)}</span></div>
+            </div>
+          </div>
+        </div>
+        ${ratingsHtml}
+        <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;">
+          <a href="https://www.imdb.com/title/${d.imdbID}" target="_blank"
+            style="color:var(--blue);font-size:0.82rem;text-decoration:none;">Ver en IMDb ↗</a>
+        </div>`;
+    } catch (e) {
+      body.innerHTML = `<div class="error-box">⚠️ Error de conexión al cargar los detalles. Intenta de nuevo.</div>`;
+    }
+  }
+
+  /* ===== CERRAR MODAL ===== */
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  /* ===== ESTADOS DE LA UI ===== */
+  function showLoading() {
+    document.getElementById('results-area').innerHTML = `
+      <div class="loading"><div class="loading-spinner"></div><p>Buscando en OMDb...</p></div>`;
+  }
+
+  function showError(msg) {
+    document.getElementById('results-area').innerHTML =
+      `<div class="error-box">⚠️ ${msg}</div>`;
+  }
+
+  function showEmpty(msg) {
+    document.getElementById('results-area').innerHTML = `
+      <div class="empty-box">
+        <div class="empty-icon">🔍</div>
+        <p style="font-weight:500;margin-bottom:0.25rem;">Sin resultados</p>
+        <p style="font-size:0.82rem;">${msg}</p>
+      </div>`;
+  }
+
+  /* ===== BOTÓN SCROLL TOP ===== */
+  window.addEventListener('scroll', () => {
+    document.getElementById('back-top').classList.toggle('visible', window.scrollY > 300);
+  });
+
+  /* ===== Cerrar modal con tecla Escape ===== */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* ===== CARGA INICIAL: busca "Boys" automáticamente al abrir la página ===== */
+  doSearch(1);
+
+  /* ===== PWA — BOTÓN DE INSTALACIÓN ===== */
+  /* El navegador dispara este evento cuando la app cumple los criterios PWA
+     y está lista para instalarse. Lo capturamos para mostrar nuestro botón. */
+  let deferredPrompt = null; // Guarda el evento para usarlo después
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();               // Evita el mini-banner automático del navegador
+    deferredPrompt = e;               // Guardamos el evento para dispararlo con nuestro botón
+    document.getElementById('btn-instalar').classList.add('visible'); // Mostramos el botón
+  });
+
+  /* Se llama al hacer clic en el botón "Instalar aplicación" */
+  async function instalarPWA() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();          // Abre el diálogo nativo de instalación del navegador
+    const { outcome } = await deferredPrompt.userChoice; // Espera la decisión del usuario
+    deferredPrompt = null;            // Solo se puede usar una vez
+
+    if (outcome === 'accepted') {
+      /* Si el usuario aceptó instalar: ocultamos el botón y mostramos el toast */
+      document.getElementById('btn-instalar').classList.remove('visible');
+      const toast = document.getElementById('pwa-toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  }
+
+  /* Se dispara cuando la PWA ya fue instalada (por ejemplo desde el banner del navegador) */
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('btn-instalar').classList.remove('visible');
+    deferredPrompt = null;
+  });
+</script>
+</body>
+</html>
