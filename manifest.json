@@ -1,18 +1,36 @@
 {
-  "name": "BOYS OMDb",
+  "name": "BOYS OMDb - Explorador de Películas y Series",
   "short_name": "BOYS OMDb",
-  "description": "Explorador de títulos Boys en OMDb con soporte PWA offline.",
-  "start_url": ".",
-  "scope": ".",
+  "description": "Explorador de títulos Boys en OMDb con soporte PWA offline. Descarga la app en tu dispositivo.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#09090f",
-  "theme_color": "#09090f",
-  "orientation": "portrait",
+  "theme_color": "#4A8FD4",
+  "orientation": "portrait-primary",
+  "screenshots": [],
+  "categories": ["entertainment", "productivity"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar BOYS",
+      "short_name": "Buscar",
+      "description": "Abre la búsqueda de títulos BOYS",
+      "url": "./index.html",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

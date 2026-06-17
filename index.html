@@ -481,7 +481,7 @@
 
     /* ===== BOTÓN INSTALAR PWA ===== */
     #btn-instalar {
-      display: none;               /* Oculto hasta que el navegador dispare beforeinstallprompt */
+      display: block;               /* Mostrar siempre como fallback */
       align-items: center;
       gap: 0.5rem;
       margin-top: 1rem;
@@ -501,7 +501,6 @@
 
     #btn-instalar:hover  { background: var(--blue-hover); transform: translateY(-1px); }
     #btn-instalar:active { transform: scale(0.97); }
-    #btn-instalar.visible { display: inline-flex; }
 
     /* Toast de confirmación tras instalar */
     #pwa-toast {
@@ -874,34 +873,35 @@
   /* ===== PWA — BOTÓN DE INSTALACIÓN ===== */
   /* El navegador dispara este evento cuando la app cumple los criterios PWA
      y está lista para instalarse. Lo capturamos para mostrar nuestro botón. */
-  let deferredPrompt = null; // Guarda el evento para usarlo después
+  let deferredPrompt = null;
 
   window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();               // Evita el mini-banner automático del navegador
-    deferredPrompt = e;               // Guardamos el evento para dispararlo con nuestro botón
-    document.getElementById('btn-instalar').classList.add('visible'); // Mostramos el botón
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('beforeinstallprompt capturado - PWA lista para instalar');
   });
 
-  /* Se llama al hacer clic en el botón "Instalar aplicación" */
   async function instalarPWA() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();          // Abre el diálogo nativo de instalación del navegador
-    const { outcome } = await deferredPrompt.userChoice; // Espera la decisión del usuario
-    deferredPrompt = null;            // Solo se puede usar una vez
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Usuario eligió: ${outcome}`);
+      deferredPrompt = null;
 
-    if (outcome === 'accepted') {
-      /* Si el usuario aceptó instalar: ocultamos el botón y mostramos el toast */
-      document.getElementById('btn-instalar').classList.remove('visible');
-      const toast = document.getElementById('pwa-toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+      if (outcome === 'accepted') {
+        document.getElementById('btn-instalar').textContent = '✅ ¡App instalada!';
+        setTimeout(() => {
+          document.getElementById('btn-instalar').textContent = '⬇️ Instalar aplicación';
+        }, 3000);
+      }
+    } else {
+      alert('Para instalar esta PWA:\n\n1. Chrome/Edge: Haz clic en el ícono "Instalar" en la barra de direcciones\n2. Safari: Abre el menú Compartir > Agregar a Pantalla de Inicio\n3. Firefox: Aún no soporta instalación PWA');
     }
   }
 
-  /* Se dispara cuando la PWA ya fue instalada (por ejemplo desde el banner del navegador) */
   window.addEventListener('appinstalled', () => {
-    document.getElementById('btn-instalar').classList.remove('visible');
-    deferredPrompt = null;
+    console.log('PWA instalada exitosamente');
+    document.getElementById('btn-instalar').textContent = '✅ ¡App instalada!';
   });
 </script>
 </body>
